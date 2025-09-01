@@ -40,7 +40,7 @@ __version__ = '1.2.0'
 
 field_names = ["pct_reads", "clade_reads", "taxon_reads", 
                "rank", "ncbi_tax", "sci_name"]
-ranks = ["D", "P", "C", "O", "F", "G", "S", "SS"]
+ranks = ["R2", "P", "C", "O", "F", "G", "S", "SS"]
 
 
 
