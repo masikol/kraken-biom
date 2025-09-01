@@ -67,7 +67,7 @@ you would like another format supported, please file an issue or send a pull
 request (note the contribution guidelines).
 ::
 
-    usage: kraken-biom [-h] [--max {D,P,C,O,F,G,S}] [--min {D,P,C,O,F,G,S}]
+    usage: kraken-biom [-h] [--max {R2,P,C,O,F,G,S}] [--min {R2,P,C,O,F,G,S}]
                           [-o OUTPUT_FP] [--fmt {hdf5,json,tsv}] [--gzip]
                           [--version] [-v]
                           kraken_reports [kraken_reports ...]
@@ -112,10 +112,10 @@ positional arguments::
 optional arguments::
     
       -h, --help            show this help message and exit
-      --max {D,P,C,O,F,G,S}
+      --max {R2,P,C,O,F,G,S}
                             Assigned reads will be recorded only if they are at or
                             below max rank. Default: O.
-      --min {D,P,C,O,F,G,S}
+      --min {R2,P,C,O,F,G,S}
                             Reads assigned at and below min rank will be recorded
                             as being assigned to the min rank level. Default: S.
       -o OUTPUT_FP, --output_fp OUTPUT_FP
