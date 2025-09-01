@@ -1,4 +1,4 @@
-kraken-biom
+kraken-biom (R2 modification)
 ===========
 .. image:: https://img.shields.io/travis/smdabdoub/kraken-biom.svg?style=plastic
     :target: https://travis-ci.org/smdabdoub/kraken-biom
@@ -7,34 +7,16 @@ kraken-biom
 Create BIOM-format tables (http://biom-format.org) from Kraken output 
 (http://ccb.jhu.edu/software/kraken/).
 
+This version of kraken-biom (1.2.0_R2) works with new Kraken report file format. In the new format, in the 4th column, domain is incicated by `R2` instead of the old `D`.
+
 Installation
 ------------
-
-From PyPI:
-
-.. code-block:: bash
-
-    $ pip install kraken-biom
-
-From GitHub:
-
-.. code-block:: bash
-
-    $ pip install git+http://github.com/smdabdoub/kraken-biom.git
 
 From source:
 
 .. code-block:: bash
 
     $ python setup.py install
-
-From docker:
-
-.. code-block:: bash
-
-    $ git clone https://github.com/smdabdoub/kraken-biom.git && cd kraken-biom
-    $ docker build . -t kraken_biom
-    $ docker run -it --rm -v ${pwd}:/data kraken_biom
 
 
 Citation
