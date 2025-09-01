@@ -7,7 +7,7 @@ kraken-biom (R2 modification)
 Create BIOM-format tables (http://biom-format.org) from Kraken output 
 (http://ccb.jhu.edu/software/kraken/).
 
-This version of kraken-biom (1.2.0_R2) works with new Kraken report file format. In the new format, in the 4th column, domain is incicated by `R2` instead of the old `D`.
+This version of kraken-biom (1.2.0_R2) works with new Kraken report file format. In the new format, in the 4th column, domain is denoted by `R2` instead of the old `D`.
 
 Installation
 ------------
