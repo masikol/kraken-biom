@@ -7,7 +7,11 @@ kraken-biom (R2 modification)
 Create BIOM-format tables (http://biom-format.org) from Kraken output 
 (http://ccb.jhu.edu/software/kraken/).
 
-This version of kraken-biom (1.2.0_R2) works with new Kraken report file format. In the new format, in the 4th column, domain is denoted by `R2` instead of the old `D`.
+This version of kraken-biom (1.2.0_R2.1) works with new Kraken report file format (4th column “rank” codes ranks differently). The differences are the following:
+
+1. Old format: `D`;  new format: `R2`.
+
+2. Old format: `SS`; new format: `S1`, `S2`, `S3`.
 
 Installation
 ------------
@@ -112,10 +116,10 @@ positional arguments::
 optional arguments::
     
       -h, --help            show this help message and exit
-      --max {R2,P,C,O,F,G,S}
+      --max {D,P,C,O,F,G,S,S1,S2,S3}
                             Assigned reads will be recorded only if they are at or
                             below max rank. Default: O.
-      --min {R2,P,C,O,F,G,S}
+      --min {D,P,C,O,F,G,S,S1,S2,S3}
                             Reads assigned at and below min rank will be recorded
                             as being assigned to the min rank level. Default: S.
       -o OUTPUT_FP, --output_fp OUTPUT_FP

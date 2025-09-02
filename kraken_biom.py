@@ -35,12 +35,19 @@ __license__ = "MIT"
 __url__ = "http://github.com/smdabdoub/kraken-biom"
 __maintainer__ = "Shareef M. Dabdoub"
 __email__ = "dabdoub.2@osu.edu"
-__version__ = '1.2.0_R2'
+__version__ = '1.2.0_R2.1'
 
 
 field_names = ["pct_reads", "clade_reads", "taxon_reads", 
                "rank", "ncbi_tax", "sci_name"]
-ranks = ["R2", "P", "C", "O", "F", "G", "S", "SS"]
+ranks = ["D", "K", "P", "C", "O", "F", "G", "S", "S1", "S2", "S3"]
+
+rank_amend_map = {
+    "R2": "D",
+}
+
+def amend_rank(rank):
+    return rank_amend_map.get(rank, rank)
 
 
 
@@ -56,15 +63,18 @@ def tax_fmt(tax_lvl, end):
     
     >>> tax_fmt({"K": "Bacteria", "P": "Firmicutes", "C": "Negativicutes", 
     ... "O": "Selenomonadales", "F": "Veillonellaceae", "G": "Veillonella", 
-    ... "S": "Veillonella parvula", "SS": "Veillonella parvula DSM 2008"}, 4)
+    ... "S": "Veillonella parvula", "S1": "Veillonella parvula DSM 2008"}, 4)
     'k__Bacteria; p__Firmicutes; c__Negativicutes; o__Selenomonadales'
     """
     if "S" in tax_lvl:
         if "G" in tax_lvl and tax_lvl["S"].startswith(tax_lvl["G"]):
             tax_lvl["S"] = tax_lvl["S"][len(tax_lvl["G"])+1:]
-    if "SS" in tax_lvl:
-        if "S" in tax_lvl and tax_lvl["SS"].startswith(tax_lvl["S"]):
-            tax_lvl["SS"] = tax_lvl["SS"][len(tax_lvl["S"])+1:]
+    for i in range(1, 4):
+        ss_rank = "S{}".format(i)
+        if ss_rank in tax_lvl:
+            genus_species = "{} {}".format(tax_lvl.get("G", ""), tax_lvl["S"]).strip()
+            if ss_rank in tax_lvl and tax_lvl[ss_rank].startswith(genus_species):
+                tax_lvl[ss_rank] = tax_lvl[ss_rank][len(genus_species)+1:]
     
     tax = ["{}__{}".format(r.lower(), tax_lvl[r] if r in tax_lvl else '') 
              for r in ranks[:end+1]]
@@ -76,8 +86,9 @@ def tax_fmt(tax_lvl, end):
     # GreenGenes and other databases still list the traditional 
     # kingdom/phylum/class/etc. So this is a hack to shoehorn the kraken-report
     # data into that format.
-    if tax[0].startswith('d'):
-        tax[0] = "k"+tax[0][1:]
+    # masikol commented this to remove k__ for both Domain and Kingdom in the output
+    # if tax[0].startswith('d'):
+    #     tax[0] = "k"+tax[0][1:]
 
     return tax
 
@@ -103,9 +114,10 @@ def parse_tax_lvl(entry, tax_lvl_depth=[]):
     # taxon.  (This also works if we're just starting out or are going deeper.)
     del tax_lvl_depth[depth:]
     # Append the new taxon.
-    erank = entry['rank']
-    if erank == '-' and depth > 8 and tax_lvl_depth[-1][0] == 'S':
-        erank = 'SS'
+    erank = amend_rank(entry['rank'].strip()) # masikol edit
+    # masikol changed 8 to 9 because now Kindgom is an official rank
+    if erank == '-' and depth > 9 and tax_lvl_depth[-1][0] == 'S':
+        erank = 'S1'
     tax_lvl_depth.append((erank, name))
 
     # Create a tax_lvl dict for the named ranks.
@@ -135,13 +147,12 @@ def parse_kraken_report(kdata, max_rank, min_rank):
         # update running tally of ranks
         tax_lvl = parse_tax_lvl(entry)
 
-        erank = entry['rank'].strip()
-        if 'SS' in tax_lvl:
-            erank = 'SS'
+        erank = amend_rank(entry['rank'].strip()) # masikol edit
+        # if 'S1' in tax_lvl:
+        #     erank = 'S1'
 
         if erank in ranks:
             r = ranks.index(erank)     
-
 
         # record the reads assigned to this taxon level, and record the taxonomy string with the NCBI ID
         if erank in ranks and min_rank_idx >= ranks.index(erank) >= max_rank_idx:
@@ -388,13 +399,13 @@ def handle_program_options():
                         help="Results files from the kraken-report tool.")
     parser.add_argument('-k', '--kraken_reports_fp', metavar="REPORTS_FP",
                         help="Folder containing kraken reports")
-    parser.add_argument('--max', default="O", choices=ranks,
+    parser.add_argument('--max', default=ranks[0], choices=ranks,
                         help="Assigned reads will be recorded only if \
-                              they are at or below max rank. Default: O.")
-    parser.add_argument('--min', default="S", choices=ranks,
+                              they are at or below max rank. Default: {}.".format(ranks[0]))
+    parser.add_argument('--min', default=ranks[-1], choices=ranks,
                         help="Reads assigned at and below min rank \
                               will be recorded as being assigned to the \
-                              min rank level. Default: S.")
+                              min rank level. Default: {}.".format(ranks[-1]))
     parser.add_argument('-o', '--output_fp', default="table.biom",
                         help="Path to the BIOM-format file. By default, the\
                         table will be in the HDF5 BIOM 2.x format. Users can\
