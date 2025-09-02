@@ -7,7 +7,7 @@ kraken-biom (R2 modification)
 Create BIOM-format tables (http://biom-format.org) from Kraken output 
 (http://ccb.jhu.edu/software/kraken/).
 
-This version of kraken-biom (1.2.0_R2.1) works with new Kraken report file format (4th column “rank” codes ranks differently). The differences are the following:
+This version of kraken-biom (0.0.a) works with new Kraken report file format (4th column “rank” codes ranks differently). The differences are the following:
 
 1. Old format: `D`;  new format: `R2`.
 
